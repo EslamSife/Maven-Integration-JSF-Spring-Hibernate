@@ -1,0 +1,5 @@
+com\ldevs\springjsf\dao\PersonDAOImpl.class
+com\ldevs\springjsf\service\PersonService.class
+com\ldevs\springjsf\dao\PersonDAO.class
+com\ldevs\springjsf\model\Person.class
+com\ldevs\springjsf\service\PersonServiceImpl.class
