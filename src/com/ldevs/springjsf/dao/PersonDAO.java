@@ -6,6 +6,7 @@ import com.ldevs.springjsf.model.Person;
 
 public interface PersonDAO {
 
-	public void addPerson(Person p);
+    public void addPerson(Person p);
+	
     public List<Person> listPersons();
 }
