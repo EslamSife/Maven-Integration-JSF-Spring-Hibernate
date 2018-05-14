@@ -17,6 +17,8 @@ import com.ldevs.springjsf.model.ServiceData;
 @SessionScoped
 public class AddNewServiceFilesImpl implements AddNewServiceFiles {
 
+    // instance vars
+    private ArrayList<String> listOfDeclarationVars = new ArrayList<>();
     private final String PUBLICMODIFIER = "public";
     private final String CLASSKEWORD = "class";
     private final String WHITESPACE = " ";
@@ -125,15 +127,7 @@ public class AddNewServiceFilesImpl implements AddNewServiceFiles {
 
         return "";
     }
-    private String requestVars(String requestVars) {
 
-        String e = "int id, String name, array OrderItem";
-
-
-
-
-        return "";
-    }
 
     @Override
     public void writeUsingFileWriter(ServiceData data) {
@@ -204,6 +198,102 @@ public class AddNewServiceFilesImpl implements AddNewServiceFiles {
             builder.append("\n");
         }
         return builder;
+    }
+
+
+
+
+
+
+    private ArrayList<String> generateVars(String input) {
+        String intKeyowrd = "int";
+        String stringKeyowrd = "String";
+        String arrKeyowrd = "array";
+        String booleanKeyowrd = "boolean";
+        // get input and cut it into parts to get types and vars
+        String[] parts = input.split(Pattern.quote(","));
+        // separate between The type and name
+        for (String part : parts) {
+            StringBuilder builder = new StringBuilder("private ");
+            String[] combine = part.split(Pattern.quote(" "));
+            // fill declaration of string
+            if (part.toLowerCase().indexOf(arrKeyowrd.toLowerCase()) != -1) {
+                combine[0] =  "ArrayList<" + combine[1] + ">";
+            }
+            builder.append(combine[0]);
+            builder.append(" " + combine[1]);
+            if (combine.length > 2) {
+                builder.append(" " + combine[2]);
+            }
+            listOfDeclarationVars.add(builder.toString() + ";");
+        }
+        return listOfDeclarationVars;
+    }
+
+    private  ArrayList<String> requestVars(String requestVars) {
+
+
+
+        ArrayList<String> listOfDeclrationVars = new ArrayList<>();
+
+        // input , make static for white to get userInput
+        String e = "int id,String name,array OrderItem orderItem,boolean active";
+        // String[] parts = e.split(Pattern.quote(","));
+
+        ArrayList<String> test = generateVars(e);
+
+        for (String string : test) {
+            System.out.println(string);
+        }
+
+        File modelPath = new File("C:\\Users\\Pc\\git\\cart-data-models\\cart-model\\src\\sa\\com\\doit\\cart\\model");
+        ArrayList<String> models = listFilesForFolder(modelPath);
+
+        File billingModelPath = new File(
+                "C:\\Users\\Pc\\git\\cart-data-models\\cart-model\\src\\sa\\com\\doit\\cart\\model\\billing");
+
+        ArrayList<String> billingModles = listFilesForFolder(billingModelPath);
+
+        models = manpulatedList(models);
+        printObj(models);
+
+        billingModles = manpulatedList(billingModles);
+        printObj(billingModles);
+
+        return listOfDeclrationVars;
+    }
+
+    public static void printObj(ArrayList<String> manpultedModelsFromDotJavaExtention) {
+        for (String element : manpultedModelsFromDotJavaExtention) {
+            System.out.println("after cut " + element);
+        }
+    }
+
+    public static ArrayList<String> manpulatedList(ArrayList<String> models) {
+        ArrayList<String> manpultedModelsFromDotJavaExtention = new ArrayList<>();
+        for (String el : models) {
+            String[] cutPart = el.split(Pattern.quote("."));
+            manpultedModelsFromDotJavaExtention.add(cutPart[0]);
+        }
+        return manpultedModelsFromDotJavaExtention;
+    }
+
+    public static ArrayList<String> listFilesForFolder(File folder) {
+        ArrayList<String> models = new ArrayList<>();
+        for (final File fileEntry : folder.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                listFilesForFolder(fileEntry);
+            } else {
+                models.add(fileEntry.getName());
+                System.out.println(fileEntry.getName());
+            }
+        }
+        return models;
+    }
+
+
+    public ArrayList<String> getListOfdeclarationVars() {
+        return listOfDeclarationVars;
     }
 
 }
